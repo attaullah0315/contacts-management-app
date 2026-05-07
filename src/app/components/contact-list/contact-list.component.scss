@@ -1,0 +1,410 @@
+// Contact List Panel Styles
+// Following the Figma design template for the contacts management dashboard.
+
+.contact-list-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #ffffff;
+  border-right: 1px solid #e8eaed;
+  overflow: hidden;
+}
+
+// ─── Panel Header ────────────────────────────────────────────────────────────
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f2f5;
+  flex-shrink: 0;
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+}
+
+.panel-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1d23;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e8eaed;
+  border-radius: 8px;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: #f8f9fa;
+    color: #374151;
+    border-color: #d1d5db;
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+// ─── Search ──────────────────────────────────────────────────────────────────
+
+.search-container {
+  padding: 16px 20px 12px;
+  flex-shrink: 0;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.search-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
+  padding: 9px 36px 9px 12px;
+  border: 1px solid #e8eaed;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #374151;
+  background: #f8f9fa;
+  transition: all 0.15s ease;
+  outline: none;
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+
+  &:focus {
+    border-color: #6366f1;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+}
+
+.search-btn {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: color 0.15s ease;
+  font-size: 14px;
+
+  &:hover {
+    color: #374151;
+  }
+
+  &.active {
+    color: #6366f1;
+  }
+}
+
+// ─── State Containers ────────────────────────────────────────────────────────
+
+.state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  flex: 1;
+}
+
+.state-text {
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 8px 0 16px;
+}
+
+.error-icon,
+.empty-icon {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.error-state {
+  .state-text {
+    color: #ef4444;
+  }
+}
+
+.loading-spinner {
+  margin-bottom: 8px;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #f0f2f5;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.retry-btn {
+  padding: 7px 16px;
+  background: #6366f1;
+  color: #ffffff;
+  border: none;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: #4f46e5;
+    transform: translateY(-1px);
+  }
+}
+
+// ─── Contacts List ───────────────────────────────────────────────────────────
+
+.contacts-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+  overflow-y: auto;
+  flex: 1;
+
+  // Custom scrollbar styling
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #e8eaed;
+    border-radius: 4px;
+
+    &:hover {
+      background: #d1d5db;
+    }
+  }
+}
+
+// ─── Contact Item ────────────────────────────────────────────────────────────
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.1s ease;
+  border-left: 3px solid transparent;
+  outline: none;
+
+  &:hover {
+    background: #f8f9fa;
+  }
+
+  &:focus-visible {
+    background: #f0f1ff;
+    border-left-color: #6366f1;
+  }
+
+  &.selected {
+    background: #f0f1ff;
+    border-left-color: #6366f1;
+
+    .contact-name {
+      color: #4f46e5;
+    }
+
+    .contact-actions {
+      opacity: 1;
+    }
+  }
+}
+
+// ─── Avatar ──────────────────────────────────────────────────────────────────
+
+.avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #e8eaed;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &--initials {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    span {
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+.status-dot {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+
+  &--online  { background: #22c55e; }
+  &--away    { background: #f59e0b; }
+  &--busy    { background: #ef4444; }
+  &--offline { background: #9ca3af; }
+}
+
+// ─── Contact Info ────────────────────────────────────────────────────────────
+
+.contact-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.contact-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1d23;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.15s ease;
+}
+
+.contact-role {
+  font-size: 12px;
+  color: #9ca3af;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ─── Action Buttons ──────────────────────────────────────────────────────────
+
+.contact-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 1;
+  transition: opacity 0.15s ease;
+  flex-shrink: 0;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: #e8eaed;
+    color: #374151;
+  }
+
+  svg {
+    pointer-events: none;
+  }
+}
+
+.contact-item.selected .action-btn {
+  color: #6366f1;
+
+  &:hover {
+    background: #f0f1ff;
+    color: #4f46e5;
+  }
+}
+
+// ─── Responsive ──────────────────────────────────────────────────────────────
+
+// On mobile, the list takes full width (parent layout handles this).
+// The actions are always visible on touch devices.
+@media (hover: none) {
+  .contact-actions {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .panel-header {
+    padding: 12px 16px;
+  }
+
+  .search-container {
+    padding: 12px 16px 10px;
+  }
+
+  .contact-item {
+    padding: 10px 16px;
+  }
+}

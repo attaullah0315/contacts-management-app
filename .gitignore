@@ -1,0 +1,23 @@
+# Angular
+dist/
+.angular/
+node_modules/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+
+# Build
+out-tsc/

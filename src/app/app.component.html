@@ -1,0 +1,51 @@
+<!-- Root App Shell -->
+<div class="app-shell">
+
+  <!-- Page Header / Breadcrumb -->
+  <header class="app-header">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="#" class="breadcrumb__link">Contacts</a>
+      <span class="breadcrumb__separator">/</span>
+      <span class="breadcrumb__current">List 3</span>
+    </nav>
+
+    <!-- Mobile back button — only visible on mobile when detail is shown -->
+    <button
+      class="mobile-back-btn"
+      *ngIf="showDetailOnMobile"
+      (click)="onBackToList()"
+      aria-label="Back to contacts list"
+    >
+      &#8592; Back
+    </button>
+  </header>
+
+  <!-- Main Content: Split Panel Layout -->
+  <main
+    class="app-main"
+    [class.show-detail]="showDetailOnMobile"
+  >
+    <!-- Left Panel: Contact List -->
+    <section
+      class="panel panel--list"
+      [class.panel--hidden-mobile]="showDetailOnMobile"
+      aria-label="Contact list"
+    >
+      <app-contact-list
+        (contactSelected)="onContactSelected($event)"
+      ></app-contact-list>
+    </section>
+
+    <!-- Right Panel: Contact Details -->
+    <section
+      class="panel panel--detail"
+      [class.panel--hidden-mobile]="!showDetailOnMobile"
+      aria-label="Contact details"
+    >
+      <app-contact-details
+        [contact]="selectedContact"
+      ></app-contact-details>
+    </section>
+  </main>
+
+</div>

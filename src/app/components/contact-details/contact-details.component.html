@@ -1,0 +1,249 @@
+<!-- Contact Details Panel -->
+<div class="contact-details-panel">
+
+  <!-- Empty State: No contact selected -->
+  <div class="empty-state" *ngIf="!contact && !isLoading">
+    <div class="empty-state__icon">👤</div>
+    <h3 class="empty-state__title">No Contact Selected</h3>
+    <p class="empty-state__text">Select a contact from the list to view their details.</p>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="skeleton-header">
+      <div class="skeleton skeleton--avatar"></div>
+      <div class="skeleton-info">
+        <div class="skeleton skeleton--name"></div>
+        <div class="skeleton skeleton--role"></div>
+        <div class="skeleton skeleton--actions"></div>
+      </div>
+    </div>
+    <div class="skeleton-body">
+      <div class="skeleton skeleton--row" *ngFor="let i of [1,2,3,4]"></div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-state" *ngIf="errorMessage && !isLoading">
+    <span class="error-state__icon">⚠️</span>
+    <p class="error-state__message">{{ errorMessage }}</p>
+    <button class="btn btn--primary" (click)="loadContactDetail(contact!.id)">
+      Try Again
+    </button>
+  </div>
+
+  <!-- Contact Detail Content -->
+  <ng-container *ngIf="contactDetail && !isLoading && !errorMessage">
+
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <img
+          *ngIf="contactDetail.avatar"
+          [src]="contactDetail.avatar"
+          [alt]="getFullName(contactDetail)"
+          class="profile-avatar__img"
+        />
+        <div class="profile-avatar__initials" *ngIf="!contactDetail.avatar">
+          {{ getInitials(contactDetail) }}
+        </div>
+        <div
+          class="profile-avatar__status"
+          [class]="'profile-avatar__status--' + (contactDetail.status || 'offline')"
+        ></div>
+      </div>
+
+      <div class="profile-meta">
+        <h1 class="profile-name">{{ getFullName(contactDetail) }}</h1>
+        <p class="profile-role">{{ contactDetail.role }}</p>
+
+        <div class="profile-actions">
+          <button class="btn btn--primary btn--icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            Message
+          </button>
+          <button class="btn btn--ghost btn--square" aria-label="Call">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.18 2 2 0 0 1 3.58 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-.7a2 2 0 0 1 2.11.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </button>
+          <button class="btn btn--ghost btn--square" aria-label="Video call">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="23 7 16 12 23 17 23 7"/>
+              <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+            </svg>
+          </button>
+          <button class="btn btn--ghost btn--square" aria-label="More options">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detail Fields -->
+    <div class="detail-fields">
+
+      <!-- Bio -->
+      <div class="detail-row" *ngIf="contactDetail.bio">
+        <span class="detail-label">Bio</span>
+        <div class="detail-value">
+          <p class="bio-text">{{ contactDetail.bio }}</p>
+        </div>
+      </div>
+
+      <!-- Email Addresses -->
+      <div class="detail-row" *ngIf="contactDetail.emailAddresses?.length">
+        <span class="detail-label">Email</span>
+        <div class="detail-value detail-value--emails">
+          <div
+            *ngFor="let emailAddr of contactDetail.emailAddresses"
+            class="email-entry"
+          >
+            <a [href]="'mailto:' + emailAddr.email" class="detail-link">
+              {{ emailAddr.email }}
+            </a>
+            <span class="badge badge--primary" *ngIf="emailAddr.isPrimary">Primary</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dial / Status Indicator -->
+      <div class="detail-row" *ngIf="contactDetail.status">
+        <span class="detail-label">Dial</span>
+        <div class="detail-value detail-value--dial">
+          <span
+            class="status-indicator"
+            [class]="'status-indicator--' + contactDetail.status"
+          ></span>
+          <span class="detail-text">
+            {{ contactDetail.phone || 'Status: ' + contactDetail.status }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Meeting URL -->
+      <div class="detail-row" *ngIf="contactDetail.meetingUrl">
+        <span class="detail-label">Meeting</span>
+        <div class="detail-value">
+          <a
+            [href]="contactDetail.meetingUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="detail-link"
+          >
+            {{ contactDetail.meetingUrl }}
+          </a>
+        </div>
+      </div>
+
+      <!-- Phone Numbers -->
+      <div class="detail-row" *ngIf="contactDetail.phone">
+        <span class="detail-label">Phone</span>
+        <div class="detail-value detail-value--phones">
+          <div class="phone-entry">
+            <a [href]="'tel:' + contactDetail.phone" class="detail-link">
+              {{ contactDetail.phone }}
+            </a>
+            <span class="badge badge--primary">Primary</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div class="detail-row" *ngIf="contactDetail.address">
+        <span class="detail-label">Address</span>
+        <div class="detail-value">
+          <span class="detail-text">{{ contactDetail.address }}</span>
+          <span *ngIf="contactDetail.city">, {{ contactDetail.city }}</span>
+          <span *ngIf="contactDetail.country">, {{ contactDetail.country }}</span>
+        </div>
+      </div>
+
+      <!-- Social Links -->
+      <div class="detail-row" *ngIf="contactDetail.socialLinks">
+        <span class="detail-label">Social</span>
+        <div class="detail-value">
+          <div class="social-links">
+            <!-- Facebook -->
+            <a
+              *ngIf="contactDetail.socialLinks?.facebook"
+              [href]="contactDetail.socialLinks!.facebook"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-btn"
+              aria-label="Facebook"
+              title="Facebook"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+              </svg>
+            </a>
+            <!-- Pinterest / Instagram -->
+            <a
+              *ngIf="contactDetail.socialLinks?.instagram"
+              [href]="contactDetail.socialLinks!.instagram"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-btn"
+              aria-label="Instagram"
+              title="Instagram"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <circle cx="12" cy="12" r="3.5"/>
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+              </svg>
+            </a>
+            <!-- Twitter -->
+            <a
+              *ngIf="contactDetail.socialLinks?.twitter"
+              [href]="contactDetail.socialLinks!.twitter"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-btn"
+              aria-label="Twitter / X"
+              title="Twitter"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+              </svg>
+            </a>
+            <!-- LinkedIn -->
+            <a
+              *ngIf="contactDetail.socialLinks?.linkedin"
+              [href]="contactDetail.socialLinks!.linkedin"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-btn"
+              aria-label="LinkedIn"
+              title="LinkedIn"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+                <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+              </svg>
+            </a>
+            <!-- Google -->
+            <a
+              class="social-btn social-btn--google"
+              aria-label="Google"
+              title="Google"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="12" x2="15" y2="12"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </ng-container>
+
+</div>

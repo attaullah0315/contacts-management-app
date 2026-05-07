@@ -1,0 +1,126 @@
+<!-- Contact List Panel -->
+<div class="contact-list-panel">
+
+  <!-- Panel Header -->
+  <div class="panel-header">
+    <div class="header-left">
+      <button class="icon-btn" aria-label="Menu">
+        <span class="material-icon">☰</span>
+      </button>
+      <h2 class="panel-title">Contacts</h2>
+    </div>
+    <div class="header-right">
+      <button class="icon-btn" aria-label="Previous">&#8249;</button>
+      <button class="icon-btn" aria-label="Next">&#8250;</button>
+    </div>
+  </div>
+
+  <!-- Search Input -->
+  <div class="search-container">
+    <label class="search-label" for="contact-search">Search for a contact</label>
+    <div class="search-input-wrapper">
+      <input
+        id="contact-search"
+        type="text"
+        class="search-input"
+        placeholder="Name, email or phone number"
+        [formControl]="searchControl"
+        aria-label="Search contacts"
+        autocomplete="off"
+      />
+      <button
+        class="search-btn"
+        aria-label="Clear search"
+        *ngIf="searchControl.value"
+        (click)="clearSearch()"
+      >
+        <span class="clear-icon">&#10005;</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="state-container" *ngIf="isLoading">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+    </div>
+    <p class="state-text">Loading contacts...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="state-container error-state" *ngIf="errorMessage && !isLoading">
+    <span class="error-icon">⚠️</span>
+    <p class="state-text">{{ errorMessage }}</p>
+    <button class="retry-btn" (click)="loadContacts()">Retry</button>
+  </div>
+
+  <!-- Empty State -->
+  <div class="state-container" *ngIf="!isLoading && !errorMessage && contacts.length === 0">
+    <span class="empty-icon">👤</span>
+    <p class="state-text">No contacts found</p>
+    <button class="retry-btn" (click)="clearSearch()">Clear search</button>
+  </div>
+
+  <!-- Contact List -->
+  <ul
+    class="contacts-list"
+    *ngIf="!isLoading && !errorMessage && contacts.length > 0"
+    role="listbox"
+    aria-label="Contact list"
+  >
+    <li
+      *ngFor="let contact of contacts; trackBy: trackByContactId"
+      class="contact-item"
+      [class.selected]="contact.id === selectedContactId"
+      (click)="selectContact(contact)"
+      (keydown.enter)="selectContact(contact)"
+      (keydown.space)="selectContact(contact)"
+      role="option"
+      [attr.aria-selected]="contact.id === selectedContactId"
+      tabindex="0"
+    >
+      <!-- Avatar -->
+      <div class="avatar-wrapper">
+        <div
+          class="status-dot"
+          [class]="'status-dot--' + (contact.status || 'offline')"
+          [attr.aria-label]="contact.status || 'offline'"
+        ></div>
+        <div class="avatar" *ngIf="contact.avatar; else initialsAvatar">
+          <img [src]="contact.avatar" [alt]="contact.firstName + ' ' + contact.lastName" loading="lazy" />
+        </div>
+        <ng-template #initialsAvatar>
+          <div class="avatar avatar--initials">
+            <span>{{ getInitials(contact) }}</span>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="contact-info">
+        <span class="contact-name">{{ contact.firstName }} {{ contact.lastName }}</span>
+        <span class="contact-role">{{ contact.role }}</span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="contact-actions">
+        <button class="action-btn" aria-label="Message" (click)="$event.stopPropagation()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </button>
+        <button class="action-btn" aria-label="Call" (click)="$event.stopPropagation()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.18 2 2 0 0 1 3.58 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-.7a2 2 0 0 1 2.11.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+        </button>
+        <button class="action-btn" aria-label="More options" (click)="$event.stopPropagation()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
+          </svg>
+        </button>
+      </div>
+    </li>
+  </ul>
+
+</div>

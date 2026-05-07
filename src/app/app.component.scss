@@ -1,0 +1,170 @@
+// App Shell Layout Styles
+// Implements a two-panel split layout matching the Figma design reference.
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f4f5f7;
+  overflow: hidden;
+}
+
+// ─── App Header / Breadcrumb ─────────────────────────────────────────────────
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: #f4f5f7;
+  flex-shrink: 0;
+}
+
+.breadcrumb {
+  display: none;
+  align-items: center;
+  gap: 8px;
+
+  &__link {
+    font-size: 13px;
+    color: #9ca3af;
+    text-decoration: none;
+
+    &:hover {
+      color: #6366f1;
+    }
+  }
+
+  &__separator {
+    font-size: 13px;
+    color: #d1d5db;
+  }
+
+  &__current {
+    font-size: 13px;
+    color: #374151;
+    font-weight: 500;
+  }
+}
+
+.mobile-back-btn {
+  display: none;  // Shown only on mobile via media query below
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid #e8eaed;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: #f8f9fa;
+  }
+}
+
+// ─── Main Split Panel Layout ─────────────────────────────────────────────────
+
+.app-main {
+  display: flex;
+  flex: 1;
+  gap: 0;
+  overflow: hidden;
+  padding: 0 24px 24px;
+  gap: 16px;
+}
+
+// ─── Panels ───────────────────────────────────────────────────────────────────
+
+.panel {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+
+  &--list {
+    // Fixed width list panel — matches Figma specification
+    width: 380px;
+    min-width: 320px;
+    flex-shrink: 0;
+  }
+
+  &--detail {
+    flex: 1;
+    min-width: 0;  // Prevents flex child overflow
+  }
+}
+
+// ─── Responsive: Tablet ──────────────────────────────────────────────────────
+
+@media (max-width: 1024px) {
+  .app-main {
+    padding: 0 16px 16px;
+    gap: 12px;
+  }
+
+  .panel--list {
+    width: 300px;
+    min-width: 280px;
+  }
+}
+
+// ─── Responsive: Mobile ───────────────────────────────────────────────────────
+// On mobile, the two panels stack. Only one is shown at a time.
+// AppComponent controls which is visible via [class.panel--hidden-mobile].
+
+@media (max-width: 768px) {
+  .app-header {
+    padding: 10px 16px;
+  }
+
+  .mobile-back-btn {
+    display: flex;
+  }
+
+  .app-main {
+    padding: 0 12px 12px;
+    gap: 0;
+    position: relative;
+  }
+
+  .panel {
+    position: absolute;
+    top: 0;
+    left: 12px;
+    right: 12px;
+    bottom: 0;
+    border-radius: 12px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .panel--list {
+    width: auto;
+    min-width: unset;
+  }
+
+  // Hide panel off-screen on mobile
+  .panel--hidden-mobile {
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-shell {
+    background: #ffffff;
+  }
+
+  .app-header {
+    padding: 8px 12px;
+  }
+
+  .panel {
+    left: 0;
+    right: 0;
+    border-radius: 0;
+  }
+}
